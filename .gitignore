@@ -1,0 +1,7 @@
+*.o
+*~
+/.sconsign.dblite
+/pishadertoy
+egl_opengl
+sdl2_list_driver
+sdl2_opengl
