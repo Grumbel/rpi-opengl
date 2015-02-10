@@ -23,12 +23,20 @@
 
 #include "util.hpp"
 
+void set_gl_attribute(SDL_GLattr attr, int value)
+{
+  if (SDL_GL_SetAttribute(attr, value) != 0)
+  {
+    std::cerr << "SDL_GL_SetAttribute(" << attr << ", " << value << ") failed: " << SDL_GetError() << std::endl;
+  }
+}
+
 class SDLLibrary
 {
 private:
   SDL_Window* m_window;
   SDL_GLContext m_gl_context;
-  
+
 public:
   SDLLibrary() :
     m_window(),
@@ -41,11 +49,17 @@ public:
     }
     else
     {
-      SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
-      SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 6);
-      SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
-      //SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-      //SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+      set_gl_attribute(SDL_GL_RED_SIZE, 8);
+      set_gl_attribute(SDL_GL_GREEN_SIZE, 8);
+      set_gl_attribute(SDL_GL_BLUE_SIZE, 8);
+      set_gl_attribute(SDL_GL_DEPTH_SIZE, 16);
+      //set_gl_attribute(SDL_GL_DOUBLEBUFFER, 1);
+
+#ifdef HAVE_OPENGL_ES2
+      set_gl_attribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+      set_gl_attribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+      set_gl_attribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
 
       m_window = SDL_CreateWindow("Title", 0, 0, 720, 576, SDL_WINDOW_OPENGL);
       if (m_window == NULL)
@@ -61,7 +75,7 @@ public:
       SDL_GL_GetAttribute(SDL_GL_RED_SIZE, &r);
       SDL_GL_GetAttribute(SDL_GL_GREEN_SIZE, &g);
       SDL_GL_GetAttribute(SDL_GL_BLUE_SIZE, &b);
-    
+
       std::cout << "Red size:   " << r
                 << "\nGreen size: " << g
                 << "\nBlue size:  " << b << std::endl;
@@ -69,7 +83,7 @@ public:
   }
 
   ~SDLLibrary()
-  { 
+  {
     SDL_GL_DeleteContext(m_gl_context);
     SDL_DestroyWindow(m_window);
     SDL_Quit();
@@ -84,11 +98,11 @@ public:
 int main()
 {
   SDLLibrary sdl_library;
-  
+
   render_opengl();
   sdl_library.swap();
   SDL_Delay(5000);
- 
+
   return 0;
 }
 

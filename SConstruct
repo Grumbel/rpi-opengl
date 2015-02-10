@@ -9,7 +9,6 @@ env = Environment(ENV=os.environ,
 sdl_env = env.Clone()
 sdl_env.ParseConfig("pkg-config --libs --cflags sdl2")
 sdl_env.Append(LIBS=["GLESv2"])
-sdl_env.Program("sdl2_opengl", ["sdl2_opengl.cpp"])
 sdl_env.Program("sdl2_list_driver", ["sdl2_list_driver.cpp"])
 
 if platform.machine() == 'armv6l':
@@ -20,9 +19,12 @@ if platform.machine() == 'armv6l':
     egl_env.Append(LIBPATH=["/opt/vc/lib"])
     egl_env.Append(LIBS=["GLESv2", "EGL", "openmaxil", "bcm_host", "SOIL"])
     egl_env.Program("egl_opengl", ["egl_opengl.cpp"])
+
+    sdl_env.Append(CPPDEFINES=[('HAVE_OPENGL_ES2')])
+    sdl_env.Program("sdl2_opengl", ["sdl2_opengl.cpp"])
 else:
     # egl_env = env.Clone()
     # egl_env.Program("egl_opengl", ["egl_opengl.cpp"])
-    pass
+    sdl_env.Program("sdl2_opengl", ["sdl2_opengl.cpp"])
 
 # EOF #
