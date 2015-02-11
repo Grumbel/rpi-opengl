@@ -20,11 +20,9 @@ if platform.machine() == 'armv6l':
     egl_env.Append(LIBS=["GLESv2", "EGL", "openmaxil", "bcm_host", "SOIL"])
     egl_env.Program("egl_opengl", ["egl_opengl.cpp"])
 
-    sdl_env.Append(CPPDEFINES=[('HAVE_OPENGL_ES2')])
+    sdl_env.Append(LIBPATH=["/opt/vc/lib"])
     sdl_env.Program("sdl2_opengl", ["sdl2_opengl.cpp"])
 else:
-    # egl_env = env.Clone()
-    # egl_env.Program("egl_opengl", ["egl_opengl.cpp"])
     sdl_env.Program("sdl2_opengl", ["sdl2_opengl.cpp"])
 
 # EOF #
